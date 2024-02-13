@@ -12,9 +12,11 @@ CENTER = (WIDTH//2, HEIGHT//2)
 COLORS = ["#FF0000", "#FFFF00", "#0000FF", "#00FF00", "#FFA500", "#800080"]
 
 ROJO = "#FF0000"
-DISTANCE_Z = 40
+DISTANCE_Z = 30
 VECTOR_3 = pygame.math.Vector3
 VECTOR_2 = pygame.math.Vector2
+
+CENTER_RADIUS = 10
 
 #Classes
 
@@ -25,7 +27,7 @@ class Star:
         self.screen = app.screen
         self.pos3d = self.get_pos()
         self.color = random.choice(COLORS)
-        self.vel = random.uniform(0.10, 0.35)
+        self.vel = random.uniform(0.20, 0.75)
         self.size = random.randint(8,10)
         self.star_pos = VECTOR_2(0,0)
         
@@ -33,7 +35,7 @@ class Star:
     def get_pos(self):
         #POLAR COORDINATE
         angle = random.uniform(0, 2 * math.pi)
-        radius = random.randint(0, HEIGHT)
+        radius = random.randint(700, HEIGHT)
         pos_x = radius * math.sin(angle)
         pos_y = radius * math.cos(angle)
         return VECTOR_3(pos_x, pos_y, DISTANCE_Z)
