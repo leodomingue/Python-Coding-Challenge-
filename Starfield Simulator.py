@@ -9,7 +9,10 @@ WIDTH, HEIGHT = 1200, 800
 FPS = 60
 STAR_QUANT = 100
 CENTER = (WIDTH//2, HEIGHT//2)
-COLORS = ["red", "yellow", "blue", "green", "orange", "purple"]
+COLORS = ["#FF0000", "#FFFF00", "#0000FF", "#00FF00", "#FFA500", "#800080"]
+
+ROJO = "#FF0000"
+DISTANCE_Z = 40
 VECTOR_3 = pygame.math.Vector3
 VECTOR_2 = pygame.math.Vector2
 
@@ -22,23 +25,30 @@ class Star:
         self.screen = app.screen
         self.pos3d = self.get_pos()
         self.color = random.choice(COLORS)
-        self.vel = random.uniform(0.10, 0.50)
-        self.size = random.randint(3,10)
+        self.vel = random.uniform(0.10, 0.35)
+        self.size = random.randint(8,10)
+        self.star_pos = VECTOR_2(0,0)
         
     
     def get_pos(self):
-        #POLARS COORDINATES
+        #POLAR COORDINATE
         angle = random.uniform(0, 2 * math.pi)
         radius = random.randint(0, HEIGHT)
         pos_x = radius * math.sin(angle)
         pos_y = radius * math.cos(angle)
-        return VECTOR_3(pos_x, pos_y, self.distance_z)
+        return VECTOR_3(pos_x, pos_y, DISTANCE_Z)
     
     def update_move(self):
-        pass
+        self.pos3d.z -= self.vel
+        if self.pos3d.z < 1:
+            self.pos3d = self.get_pos()
+            self.size = random.randint(2,10)
+            
+        self.star_pos = VECTOR_2(self.pos3d.x, self.pos3d.y) / self.pos3d.z + CENTER
+        
     
     def draw_star(self):
-        pass
+        pygame.draw.rect(self.screen, self.color, (*self.star_pos, self.size, self.size))
     
 #SET OF STARS
 class StarField:
