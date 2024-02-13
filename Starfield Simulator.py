@@ -7,9 +7,9 @@ from sys import exit
 #Variables
 WIDTH, HEIGHT = 1200, 800
 FPS = 60
-STAR_QUANT = 100
+STAR_QUANT = 200
 CENTER = (WIDTH//2, HEIGHT//2)
-COLORS = ["#FF0000", "#FFFF00", "#0000FF", "#00FF00", "#FFA500", "#800080"]
+COLORS = ["#F5F5F5", "#F8F8FF", "#FAEBD7", "#FFFFF0",  "#F8F8FF", "#F5F5F5", "#FFFFFF", "#808080", "#A9A9A9", "#C0C0C0", "#D3D3D3", "#DCDCDC", "#FFFF00", "#FFD700", "#FFBF00", "#FFA500", "#FF9900"]
 
 DISTANCE_Z = 30
 VECTOR_3 = pygame.math.Vector3
@@ -87,7 +87,7 @@ class App:
         
     def run(self):
         while True:
-            self.screen.fill("black")
+            self.screen.fill("#000019")
             self.starfield.run()
             
             #Update all the screen
