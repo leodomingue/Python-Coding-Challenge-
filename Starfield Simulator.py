@@ -11,11 +11,9 @@ STAR_QUANT = 100
 CENTER = (WIDTH//2, HEIGHT//2)
 COLORS = ["#FF0000", "#FFFF00", "#0000FF", "#00FF00", "#FFA500", "#800080"]
 
-ROJO = "#FF0000"
 DISTANCE_Z = 30
 VECTOR_3 = pygame.math.Vector3
 VECTOR_2 = pygame.math.Vector2
-VECTOR_2_prv = pygame.math.Vector2
 
 CENTER_RADIUS = 10
 TRAIL_LENGTH = 5
@@ -49,7 +47,7 @@ class Star:
             self.pos3d = self.get_pos()
             self.size = random.randint(4,10)
             
-        # Almacenar la ubicación anterior en la estela
+        # Store prev location
         if self.star_pos != VECTOR_2(0,0):
             self.trail.append(self.star_pos.copy())
             if len(self.trail) > TRAIL_LENGTH:
