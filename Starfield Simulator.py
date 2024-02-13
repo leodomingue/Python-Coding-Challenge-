@@ -15,8 +15,10 @@ ROJO = "#FF0000"
 DISTANCE_Z = 30
 VECTOR_3 = pygame.math.Vector3
 VECTOR_2 = pygame.math.Vector2
+VECTOR_2_prv = pygame.math.Vector2
 
 CENTER_RADIUS = 10
+TRAIL_LENGTH = 5
 
 #Classes
 
@@ -27,9 +29,10 @@ class Star:
         self.screen = app.screen
         self.pos3d = self.get_pos()
         self.color = random.choice(COLORS)
-        self.vel = random.uniform(0.20, 0.75)
-        self.size = random.randint(8,10)
+        self.vel = random.uniform(0.20, 0.55)
+        self.size = 10
         self.star_pos = VECTOR_2(0,0)
+        self.trail = []
         
     
     def get_pos(self):
@@ -42,15 +45,24 @@ class Star:
     
     def update_move(self):
         self.pos3d.z -= self.vel
-        if self.pos3d.z < 1:
+        if self.pos3d.z < 0.1:
             self.pos3d = self.get_pos()
-            self.size = random.randint(2,10)
+            self.size = random.randint(4,10)
+            
+        # Almacenar la ubicación anterior en la estela
+        if self.star_pos != VECTOR_2(0,0):
+            self.trail.append(self.star_pos.copy())
+            if len(self.trail) > TRAIL_LENGTH:
+                self.trail.pop(0)
             
         self.star_pos = VECTOR_2(self.pos3d.x, self.pos3d.y) / self.pos3d.z + CENTER
         
     
     def draw_star(self):
         pygame.draw.rect(self.screen, self.color, (*self.star_pos, self.size, self.size))
+        for i in range(len(self.trail)-1):
+            if 0 < self.trail[i][0] <= 1200 and 0 < self.trail[i][1] <=800:
+                pygame.draw.line(self.screen, self.color, self.trail[i], self.trail[i+1],width=self.size-2)
     
 #SET OF STARS
 class StarField:
