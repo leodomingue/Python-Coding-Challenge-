@@ -9,7 +9,7 @@ WIDTH, HEIGHT = 1200, 800
 FPS = 60
 STAR_QUANT = 200
 CENTER = (WIDTH//2, HEIGHT//2)
-COLORS = ["#F5F5F5", "#F8F8FF", "#FAEBD7", "#FFFFF0",  "#F8F8FF", "#F5F5F5", "#FFFFFF", "#808080", "#A9A9A9", "#C0C0C0", "#D3D3D3", "#DCDCDC", "#FFFF00", "#FFD700", "#FFBF00", "#FFA500", "#FF9900"]
+COLORS = ["WHITE"]
 
 DISTANCE_Z = 30
 VECTOR_3 = pygame.math.Vector3
@@ -28,7 +28,7 @@ class Star:
         self.pos3d = self.get_pos()
         self.color = random.choice(COLORS)
         self.vel = random.uniform(0.20, 0.55)
-        self.size = 10
+        self.size = 5
         self.star_pos = VECTOR_2(0,0)
         self.trail = []
         
@@ -87,7 +87,7 @@ class App:
         
     def run(self):
         while True:
-            self.screen.fill("#000019")
+            self.screen.fill("BLACK")
             self.starfield.run()
             
             #Update all the screen
