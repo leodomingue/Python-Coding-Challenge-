@@ -1,141 +1,98 @@
 import pygame
 import numpy as np
-import math
-from sys import exit
-
+from math import *
 
 #Variables
+FPS = 60
 WIDTH, HEIGHT = 1200, 800
-FPS = 22
 CENTER = (WIDTH//2, HEIGHT//2)
-angle = 0
-
-POINTS = []
-POINTS.append(np.matrix([-1, -1, 1]))
-POINTS.append(np.matrix([1, -1, 1]))
-POINTS.append(np.matrix([1, 1, 1]))
-POINTS.append(np.matrix([-1, 1, 1]))
-POINTS.append(np.matrix([-1, -1, 1]))
-POINTS.append(np.matrix([1, -1, 1]))
-POINTS.append(np.matrix([1, 1, 1]))
-POINTS.append(np.matrix([-1, 1, 1]))
-
-PROJECTION_MATRIX = np.matrix([
-    [1, 0, 0],
-    [0, 1, 0]
-])
-
-ROTATION_X = np.matrix([
-    [1, 0,  0],
-    [0, math.cos(angle), math.sin(angle) * -1],
-    [0, math.sin(angle), math.cos(angle)]
-    ])
-
-ROTATION_Y = np.matrix([
-    [math.cos(angle), 0,  math.sin(angle)],
-    [0, 1, 0],
-    [math.sin(angle) * -1, 0, math.cos(angle)]
-    ])
-
-ROTATION_Z = np.matrix([
-    [math.cos(angle), math.sin(angle) * -1,  0],
-    [math.sin(angle), math.cos(angle), 0],
-    [0, 0,  1]
-    ])
-
-
-
-#Classes
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
 
 class Cube:
     def __init__(self, app):
-        self.points = POINTS
-        self.color = "RED"
-        self.screen = app.screen
-        self.angle = 0
-        self.rotation_x  = np.matrix([
-                                    [math.cos(angle), 0,  math.sin(angle)],
-                                    [0, 1, 0],
-                                    [math.sin(angle) * -1, 0, math.cos(angle)]
-                                    ])
-        self.rotation_z = np.matrix([
-                                    [math.cos(angle), math.sin(angle) * -1,  0],
-                                    [math.sin(angle), math.cos(angle), 0],
-                                    [0, 0,  1]
-                                    ])
+        self.app = app
+        self.points = [
+            np.array([-1, -1, 1]),
+            np.array([1, -1, 1]),
+            np.array([1,  1, 1]),
+            np.array([-1, 1, 1]),
+            np.array([-1, -1, -1]),
+            np.array([1, -1, -1]),
+            np.array([1, 1, -1]),
+            np.array([-1, 1, -1])
+        ]
+        self.projected_points = [
+             [n, n] for n in range(len(self.points))
+        ]
         
-        self.rotation_matrix = np.eye(3)
-        
-    """def apply_rotation(self, axis, angle):
-        if axis == 'x':
-            rotation_matrix = np.matrix([
-                [1, 0, 0],
-                [0, math.cos(angle), -math.sin(angle)],
-                [0, math.sin(angle), math.cos(angle)]
-            ])
-            
-        elif axis == 'y':
-            rotation_matrix = np.matrix([
-                [math.cos(angle), 0, math.sin(angle)],
-                [0, 1, 0],
-                [-math.sin(angle), 0, math.cos(angle)]
-            ])
-            
-        elif axis == 'z':
-            rotation_matrix = np.matrix([
-                [math.cos(angle), -math.sin(angle), 0],
-                [math.sin(angle), math.cos(angle), 0],
-                [0, 0, 1]
-            ])
-        else:
-            rotation_matrix = np.eye(3)  
 
-        self.rotation_matrix = np.dot(rotation_matrix, self.rotation_matrix)
-        return self.rotation_matrix """
+    def rotate(self, angle):
+        rotation_z = np.array([
+            [cos(angle), -sin(angle), 0],
+            [sin(angle), cos(angle), 0],
+            [0, 0, 1],
+        ])
         
+        rotation_x = np.array([
+                [1, 0, 0],
+                [0, cos(angle), -sin(angle)],
+                [0, sin(angle), cos(angle)],
+        ])
         
-    def draw_points(self):
-        self.angle += 0.01
-        for point in self.points:
-            rotated = np.dot(self.rotation_x, point.reshape(3,1))
-            rotated = np.dot(self.rotation_x, rotated)
-            
-            
-            proyected_point = np.dot(PROJECTION_MATRIX, rotated)
-            x_pos = int(proyected_point[0].item()) * 100  + CENTER[0]
-            y_pos = int(proyected_point[1].item())  * 100 + CENTER[1]
-            
-            pygame.draw.circle(self.screen, self.color, (x_pos, y_pos), 5)
+        self.points = [np.dot(rotation_z, point) for point in self.points]
+
+        self.points = [np.dot(rotation_x, point) for point in self.points]
+        
+    def connect_points(self, i, j, points):
+        pygame.draw.line(app.screen, WHITE, (points[i][0], points[i][1]), (points[j][0], points[j][1]))
+
+
+class App:
+    def __init__(self):
+        self.screen =  pygame.display.set_mode((WIDTH, HEIGHT))
+        self.clock = pygame.time.Clock()
+        
+        self.scale = 100
+        self.angle = 0
+        self.cube = Cube(App)
         
     
 
-
-#Main Class
-class App:
-    def __init__(self):
-        pygame.init()
-        self.screen =  pygame.display.set_mode((WIDTH, HEIGHT))
-        self.clock = pygame.time.Clock()
-        self.cube = Cube(self)
-        
     def run(self):
         while True:
-            self.screen.fill("BLACK")
-            self.cube.draw_points()
-            
-            #Update all the screen
-            pygame.display.flip()
+            self.clock.tick(60)
+
             for event in pygame.event.get():
-                
-                #Activates when touch quit 
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
 
-            self.clock.tick(FPS)
-           
+            self.screen.fill(BLACK)
 
-#Start App
+            
+            self.angle= 0.02
+                
+            self.cube.rotate(self.angle)
+            
+            i = 0
+            for point in self.cube.points:
+                x = int(point[0] * self.scale) + CENTER[0]
+                y = int(point[1] * self.scale) + CENTER[1]
+                
+                self.cube.projected_points[i] = [x, y]
+                pygame.draw.circle(self.screen, RED, (x, y), 5)
+                i += 1
+                
+            for p in range(4):
+                self.cube.connect_points(p, (p+1) % 4, self.cube.projected_points)
+                self.cube.connect_points(p+4, ((p+1) % 4) + 4, self.cube.projected_points)
+                self.cube.connect_points(p, (p+4), self.cube.projected_points)
+
+            pygame.display.update()
+
 if __name__ == "__main__":
+    pygame.init()
     app = App()
     app.run()
