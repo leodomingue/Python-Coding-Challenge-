@@ -11,6 +11,32 @@ CELLS_SIZE= 40
 
 SCREEN_UPDATE = pygame.USEREVENT
 
+class Button:
+    def __init__(self, app , x_pos, y_pos, text_input):
+        self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 25)
+        self.app = app
+        self.image = pygame.image.load("Snake Game/button.png").convert_alpha()
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+        self.text_input = text_input
+        self.text = self.font.render(self.text_input, False, "white")
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+        
+    def update_image(self):
+        app.screen.blit(self.image, self.rect)
+        app.screen.blit(self.text, self.text_rect)
+        
+    def check_input(self, position_mouse):
+        if position_mouse[0] in range(self.rect.left, self.rect.right) and position_mouse[1] in range(self.rect.top, self.rect.bottom):
+            print("a")
+    
+    def change_color(self, position_mouse):
+        if position_mouse[0] in range(self.rect.left, self.rect.right) and position_mouse[1] in range(self.rect.top, self.rect.bottom):
+            self.text = self.font.render(self.text_input, True, "Black")
+        else:
+            self.text = self.font.render(self.text_input, True, "White")
+
 
 class Fruit:
     def __init__(self,app):
@@ -52,6 +78,8 @@ class Snake:
         
         self.body_horizontal = pygame.image.load("Snake Game/Graphics/Original/body_horizontal.png").convert_alpha()
         self.body_vertical = pygame.image.load("Snake Game/Graphics/Original/body_vertical.png").convert_alpha()
+        
+        self.eat_sound = pygame.mixer.Sound("Snake Game/eating_sound2.mp3")
         
         self.head = self.head_right
         self.tail = self.tail_right
@@ -129,6 +157,8 @@ class Snake:
     def add_cell(self):
         self.new_block = True
         
+    def play_eat_sound(self):
+        self.eat_sound.play()
 
 class Main:
     def __init__(self, app):
@@ -140,7 +170,10 @@ class Main:
         self.check_collision()
         self.check_fail()
         
+        
     def draw_elements(self):
+        self.draw_board()
+        self.draw_score()
         self.fruit.draw_fruit()
         self.snake.draw_snake()
         
@@ -148,6 +181,7 @@ class Main:
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.new_random_position()
             self.snake.add_cell()
+            self.snake.play_eat_sound()
             
     def check_fail(self):
         #Check if snake is out of the screen
@@ -176,6 +210,14 @@ class Main:
                     if j % 2 != 0:
                         board_rect = pygame.Rect(i* CELLS_SIZE, j * CELLS_SIZE, CELLS_SIZE, CELLS_SIZE)
                         pygame.draw.rect(app.screen, grass_color, board_rect)
+                        
+    def draw_score(self):
+        score_text = str(len(self.snake.body) - 3)
+        score_surface = app.font.render(score_text,True,"Black")
+        score_x = int(CELLS_NUMBER * CELLS_SIZE - 60)
+        score_y = int(CELLS_NUMBER * CELLS_SIZE - 40)
+        score_rect = score_surface.get_rect(center = (score_x,score_y))
+        app.screen.blit(score_surface, score_rect)
                 
 
 class App:
@@ -184,9 +226,11 @@ class App:
         self.clock = pygame.time.Clock()
         self.main_game = Main(self)
         self.apple = pygame.image.load("Snake Game/apple.png").convert_alpha()
+        self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 25)
         
         
     def run(self):
+        
         while True:
             self.clock.tick(FPS)
 
@@ -212,7 +256,6 @@ class App:
                     
 
             self.screen.fill((180, 230, 80))
-            self.main_game.draw_board()
             self.main_game.draw_elements()
             
             pygame.display.update()
@@ -220,6 +263,6 @@ class App:
         
 if __name__ == "__main__":
     SCREEN_UPDATE = pygame.USEREVENT
-    pygame.time.set_timer(SCREEN_UPDATE, 160)
+    pygame.time.set_timer(SCREEN_UPDATE, 140)
     app = App()
     app.run()
