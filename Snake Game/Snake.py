@@ -161,6 +161,22 @@ class Main:
             
     def game_over(self):
         print("nada")
+        
+    def draw_board(self):
+        grass_color = (167,209,61)
+        
+        for i in range(CELLS_NUMBER):
+            if i % 2 == 0:
+                for j in range(CELLS_NUMBER):
+                    if j % 2 == 0:
+                        board_rect = pygame.Rect(i* CELLS_SIZE, j * CELLS_SIZE, CELLS_SIZE, CELLS_SIZE)
+                        pygame.draw.rect(app.screen, grass_color, board_rect)
+            else:
+                for j in range(CELLS_NUMBER):
+                    if j % 2 != 0:
+                        board_rect = pygame.Rect(i* CELLS_SIZE, j * CELLS_SIZE, CELLS_SIZE, CELLS_SIZE)
+                        pygame.draw.rect(app.screen, grass_color, board_rect)
+                
 
 class App:
     def __init__(self):
@@ -196,6 +212,7 @@ class App:
                     
 
             self.screen.fill((180, 230, 80))
+            self.main_game.draw_board()
             self.main_game.draw_elements()
             
             pygame.display.update()
@@ -203,6 +220,6 @@ class App:
         
 if __name__ == "__main__":
     SCREEN_UPDATE = pygame.USEREVENT
-    pygame.time.set_timer(SCREEN_UPDATE, 150)
+    pygame.time.set_timer(SCREEN_UPDATE, 160)
     app = App()
     app.run()
