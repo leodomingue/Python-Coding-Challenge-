@@ -193,10 +193,41 @@ class Main:
         #check if snake hits itself
         for cell in self.snake.body[1:]:
             if cell == self.snake.body[0]:
-                print("b")
+                self.game_over()
             
     def game_over(self):
-        print("nada")
+        game_over_menu= True
+        while game_over_menu:
+            MOUSE_POS = pygame.mouse.get_pos()
+            
+            
+            RETRY_BUTTON = Button(self, 400, 300, "Reintentar")
+            SUMBIT_BUTTON = Button(self, 400, 500, "Enviar Puntuacion")
+            QUIT_BUTTON = Button(self, 400, 700, "Salir")
+            
+            for button in [RETRY_BUTTON, SUMBIT_BUTTON, QUIT_BUTTON]:
+                button.change_color(MOUSE_POS)
+                button.update_image()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if RETRY_BUTTON.check_input(MOUSE_POS):
+                            self.snake.body = [Vector2(5,10),Vector2(4,10),Vector2(3,10)]
+                            self.snake.direction = Vector2(1,0)
+                            game_over_menu = False
+                            
+                    if SUMBIT_BUTTON.check_input(MOUSE_POS):
+                        pass
+                    if QUIT_BUTTON.check_input(MOUSE_POS):
+                        pygame.quit()
+                        exit()
+            
+
+            pygame.display.update()
+            
         
     def draw_board(self):
         grass_color = (167,209,61)
@@ -267,7 +298,7 @@ class App:
             MOUSE_POS = pygame.mouse.get_pos()
             
             PLAY_BUTTON = Button(self, 400, 200, "Jugar")
-            OPTIONS_BUTTON = Button(self, 400, 400, "Opcion")
+            OPTIONS_BUTTON = Button(self, 400, 400, "Opciones")
             QUIT_BUTTON = Button(self, 400, 600, "Salir")
             
             for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
