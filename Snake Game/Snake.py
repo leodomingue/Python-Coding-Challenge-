@@ -317,7 +317,7 @@ class App:
         
     def run(self):
         while True:
-            self.screen.fill((0,0,0))
+            self.screen.fill((180, 230, 80))
             MOUSE_POS = pygame.mouse.get_pos()
             
             PLAY_BUTTON = Button(self, 400, 200, "Jugar")
