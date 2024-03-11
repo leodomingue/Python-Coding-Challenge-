@@ -197,8 +197,27 @@ class Main:
             
     def game_over(self):
         game_over_menu= True
+        game_over_font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 55)
         while game_over_menu:
             MOUSE_POS = pygame.mouse.get_pos()
+            
+            
+            game_over_text = "Perdiste"
+            score_text = f"tu puntacion fue: {str((len(self.snake.body) - 3))}"
+            
+            game_over_surface = game_over_font.render(game_over_text, True, "Black")
+            score_surface = game_over_font.render(score_text, True, "Black")
+            
+            game_over_x = 400
+            game_over_y = 50
+            score_x = 400
+            score_y = 150
+            
+            game_over_rect = game_over_surface.get_rect(center = (game_over_x,game_over_y))
+            score_rect = score_surface.get_rect(center = (score_x,score_y))
+            
+            app.screen.blit(game_over_surface, game_over_rect)
+            app.screen.blit(score_surface, score_rect)
             
             
             RETRY_BUTTON = Button(self, 400, 300, "Reintentar")
