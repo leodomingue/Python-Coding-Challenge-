@@ -184,6 +184,10 @@ class Main:
             self.fruit.new_random_position()
             self.snake.add_cell()
             self.snake.play_eat_sound()
+        
+        for cell in self.snake.body[1:]:
+            if cell == self.fruit.pos:
+                self.fruit.new_random_position()
             
     def check_fail(self):
         #Check if snake is out of the screen
