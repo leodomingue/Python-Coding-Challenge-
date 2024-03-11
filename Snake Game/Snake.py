@@ -12,10 +12,11 @@ CELLS_SIZE= 40
 SCREEN_UPDATE = pygame.USEREVENT
 
 class Button:
-    def __init__(self, app , x_pos, y_pos, text_input):
-        self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 25)
+    def __init__(self, app, x_pos, y_pos, text_input):
+        self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 45)
         self.app = app
         self.image = pygame.image.load("Snake Game/button.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (400, 150))
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
@@ -29,7 +30,8 @@ class Button:
         
     def check_input(self, position_mouse):
         if position_mouse[0] in range(self.rect.left, self.rect.right) and position_mouse[1] in range(self.rect.top, self.rect.bottom):
-            print("a")
+            return True
+        return False
     
     def change_color(self, position_mouse):
         if position_mouse[0] in range(self.rect.left, self.rect.right) and position_mouse[1] in range(self.rect.top, self.rect.bottom):
@@ -228,9 +230,7 @@ class App:
         self.apple = pygame.image.load("Snake Game/apple.png").convert_alpha()
         self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 25)
         
-        
-    def run(self):
-        
+    def play_game(self):
         while True:
             self.clock.tick(FPS)
 
@@ -252,12 +252,42 @@ class App:
                             self.main_game.snake.direction = Vector2(1, 0)
                     if event.key == pygame.K_LEFT:
                         if self.main_game.snake.direction.x != 1:
-                         self.main_game.snake.direction = Vector2(-1, 0)
-                    
+                            self.main_game.snake.direction = Vector2(-1, 0)
+                        
 
             self.screen.fill((180, 230, 80))
             self.main_game.draw_elements()
+                
+            pygame.display.update()
+        
+        
+    def run(self):
+        while True:
+            self.screen.fill((0,0,0))
+            MOUSE_POS = pygame.mouse.get_pos()
             
+            PLAY_BUTTON = Button(self, 400, 200, "Jugar")
+            OPTIONS_BUTTON = Button(self, 400, 400, "Opcion")
+            QUIT_BUTTON = Button(self, 400, 600, "Salir")
+            
+            for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+                button.change_color(MOUSE_POS)
+                button.update_image()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_BUTTON.check_input(MOUSE_POS):
+                        self.play_game()
+                    if OPTIONS_BUTTON.check_input(MOUSE_POS):
+                        pass
+                    if QUIT_BUTTON.check_input(MOUSE_POS):
+                        pygame.quit()
+                        exit()
+            
+
             pygame.display.update()
 
         
