@@ -57,29 +57,36 @@ class Fruit:
         
         
 class Snake:
-    def __init__(self,app):
+    def __init__(self,app, color="Original"):
         self.app = app
         self.body = [Vector2(5,10),Vector2(4,10),Vector2(3,10)]
         self.direction = Vector2(1,0)
         self.new_block = False
         
-        self.tail_up = pygame.image.load("Snake Game/Graphics/Original/tail_up.png").convert_alpha()
-        self.tail_down = pygame.image.load("Snake Game/Graphics/Original/tail_down.png").convert_alpha()
-        self.tail_right = pygame.image.load("Snake Game/Graphics/Original/tail_right.png").convert_alpha()
-        self.tail_left =  pygame.image.load("Snake Game/Graphics/Original/tail_left.png").convert_alpha()
+        if color == "Original":
+            folder_path = "Snake Game/Graphics/Original/"
+        elif color == "Red":
+            folder_path = "Snake Game/Graphics/Red/"
+        elif color == "DarkGreen":
+            folder_path = "Snake Game/Graphics/DarkGreen/"
         
-        self.head_down = pygame.image.load("Snake Game/Graphics/Original/head_down.png").convert_alpha()
-        self.head_up = pygame.image.load("Snake Game/Graphics/Original/head_up.png").convert_alpha()
-        self.head_right = pygame.image.load("Snake Game/Graphics/Original/head_right.png").convert_alpha()
-        self.head_left = pygame.image.load("Snake Game/Graphics/Original/head_left.png").convert_alpha()
+        self.tail_up = pygame.image.load(folder_path + "tail_up.png").convert_alpha()
+        self.tail_down = pygame.image.load(folder_path + "tail_down.png").convert_alpha()
+        self.tail_right = pygame.image.load(folder_path + "tail_right.png").convert_alpha()
+        self.tail_left =  pygame.image.load(folder_path + "tail_left.png").convert_alpha()
         
-        self.body_topleft = pygame.image.load("Snake Game/Graphics/Original/body_topleft.png").convert_alpha()
-        self.body_topright = pygame.image.load("Snake Game/Graphics/Original/body_topright.png").convert_alpha()
-        self.body_bottomleft = pygame.image.load("Snake Game/Graphics/Original/body_bottomleft.png").convert_alpha()
-        self.body_bottomright = pygame.image.load("Snake Game/Graphics/Original/body_bottomright.png").convert_alpha()
+        self.head_down = pygame.image.load(folder_path + "head_down.png").convert_alpha()
+        self.head_up = pygame.image.load(folder_path + "head_up.png").convert_alpha()
+        self.head_right = pygame.image.load(folder_path + "head_right.png").convert_alpha()
+        self.head_left = pygame.image.load(folder_path + "head_left.png").convert_alpha()
         
-        self.body_horizontal = pygame.image.load("Snake Game/Graphics/Original/body_horizontal.png").convert_alpha()
-        self.body_vertical = pygame.image.load("Snake Game/Graphics/Original/body_vertical.png").convert_alpha()
+        self.body_topleft = pygame.image.load(folder_path + "body_topleft.png").convert_alpha()
+        self.body_topright = pygame.image.load(folder_path + "body_topright.png").convert_alpha()
+        self.body_bottomleft = pygame.image.load(folder_path + "body_bottomleft.png").convert_alpha()
+        self.body_bottomright = pygame.image.load(folder_path + "body_bottomright.png").convert_alpha()
+        
+        self.body_horizontal = pygame.image.load(folder_path + "body_horizontal.png").convert_alpha()
+        self.body_vertical = pygame.image.load(folder_path + "body_vertical.png").convert_alpha()
         
         self.eat_sound = pygame.mixer.Sound("Snake Game/eating_sound2.mp3")
         
@@ -163,8 +170,8 @@ class Snake:
         self.eat_sound.play()
 
 class Main:
-    def __init__(self, app):
-        self.snake = Snake(app)
+    def __init__(self, app, color = "Original"):
+        self.snake = Snake(app, color)
         self.fruit = Fruit(app)
         
     def update(self):
@@ -280,6 +287,7 @@ class App:
     def __init__(self):
         self.screen =  pygame.display.set_mode((CELLS_NUMBER * CELLS_SIZE, CELLS_NUMBER * CELLS_SIZE))
         self.clock = pygame.time.Clock()
+        #Aca
         self.main_game = Main(self)
         self.apple = pygame.image.load("Snake Game/apple.png").convert_alpha()
         self.font = pygame.font.Font("Snake Game/SnakeHoliday.otf", 25)
@@ -315,6 +323,44 @@ class App:
             pygame.display.update()
         
         
+    def options_game(self):
+        menu = True
+        while menu:
+            self.screen.fill((180, 230, 80))
+            MOUSE_POS = pygame.mouse.get_pos()
+            
+            ORIGINAL_BUTTON = Button(self, 400, 100, "Original")
+            RED_BUTTON = Button(self, 400, 300, "Rojo")
+            BLACK_BUTTON = Button(self, 400, 500, "Negro")
+            GREEN_BUTTON = Button(self, 400, 700, "Verde Oscuro")
+            
+            
+            for button in [ORIGINAL_BUTTON, RED_BUTTON, BLACK_BUTTON, GREEN_BUTTON]:
+                button.change_color(MOUSE_POS)
+                button.update_image()
+                
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if ORIGINAL_BUTTON.check_input(MOUSE_POS):
+                        self.main_game = Main(self, "Original")
+                        menu = False
+                    if RED_BUTTON.check_input(MOUSE_POS):
+                        self.main_game = Main(self, "Red")
+                        menu = False
+                    if BLACK_BUTTON.check_input(MOUSE_POS):
+                        self.main_game = Main(self, "Black")
+                        menu = False
+                    if GREEN_BUTTON.check_input(MOUSE_POS):
+                        self.main_game = Main(self, "DarkGreen")
+                        menu = False
+            
+
+            pygame.display.update()
+            
+        
     def run(self):
         while True:
             self.screen.fill((180, 230, 80))
@@ -336,7 +382,7 @@ class App:
                     if PLAY_BUTTON.check_input(MOUSE_POS):
                         self.play_game()
                     if OPTIONS_BUTTON.check_input(MOUSE_POS):
-                        pass
+                        self.options_game()
                     if QUIT_BUTTON.check_input(MOUSE_POS):
                         pygame.quit()
                         exit()
