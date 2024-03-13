@@ -1,15 +1,21 @@
 import pygame
+from bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, position, WIDTH):
+    def __init__(self, position, WIDTH, HEIGHT):
         super().__init__()
         self.image = pygame.image.load("Space Invaders/assets/player.png").convert_alpha()
         self.rect = self.image.get_rect(midbottom = position)
         self.speed = 5
-        self.width = WIDTH
+        
         self.ready = True
         self.shoot_time = 0
         self.shoot_cc = 1000
+
+        self.shoots = pygame.sprite.Group()
+        
+        self.width = WIDTH
+        self.height = HEIGHT
         
     def get_input(self):
         keys = pygame.key.get_pressed()
@@ -35,6 +41,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.get_input()
         self.recharge_shoot()
+        self.shoots.update()
         
     def shoot(self):
-        print("Miau")
+        self.shoots.add(Bullet(self.rect.center, self.height))

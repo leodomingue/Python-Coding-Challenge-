@@ -14,10 +14,11 @@ BLACK = (0,0,0)
 class Game:
     def __init__(self, app):
         self.app = app
-        player_sprite = Player((WIDTH/2,HEIGHT), WIDTH)
+        player_sprite = Player((WIDTH/2,HEIGHT), WIDTH, HEIGHT)
         self.player = pygame.sprite.GroupSingle(player_sprite)
     
     def run_game(self):
+        self.player.sprite.shoots.draw(app.screen)
         self.player.update()
         self.player.draw(app.screen)
 
