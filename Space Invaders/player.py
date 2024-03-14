@@ -44,4 +44,4 @@ class Player(pygame.sprite.Sprite):
         self.shoots.update()
         
     def shoot(self):
-        self.shoots.add(Bullet(self.rect.center, self.height))
+        self.shoots.add(Bullet(self.rect.center, 5, self.height))
