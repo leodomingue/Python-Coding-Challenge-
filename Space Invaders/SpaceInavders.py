@@ -98,6 +98,45 @@ class Game:
     def create_multiple_obstacle(self, x_start, y_start, *offset):
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
+            
+    def collision_check(self):
+        #Player shoots
+        if self.player.sprite.shoots:
+            for shoot in self.player.sprite.shoots:
+                #Obstacle Collision
+                if pygame.sprite.spritecollide(shoot, self.block, True):
+                    shoot.kill()
+                    
+                #Alien Collision
+                if pygame.sprite.spritecollide(shoot, self.aliens, True):
+                    shoot.kill()
+                    
+                #Extra Collsion
+                if pygame.sprite.spritecollide(shoot, self.extra, True):
+                    shoot.kill()
+                    
+        #Alien shoot
+        if self.alien_shoots:
+            for shoot in self.alien_shoots:
+                #Obstace Collision
+                if pygame.sprite.spritecollide(shoot, self.block, True):
+                    shoot.kill()
+                    
+                #Player Collsion
+                if pygame.sprite.spritecollide(shoot, self.player, False):
+                    shoot.kill()
+                    print("a")
+                    
+        #Alien-player 
+        if self.aliens:
+            for alien in self.aliens:
+                pygame.sprite.spritecollide(alien, self.block, True)
+                
+                if pygame.sprite.spritecollide(alien, self.player, False):
+                    pygame.quit()
+                    exit()
+                    
+            
         
     
     def run_game(self):
@@ -116,6 +155,7 @@ class Game:
         self.alien_shoots.draw(app.screen)
         self.extra.draw(app.screen)
         
+        self.collision_check()
 
 class App:
     def __init__(self):
