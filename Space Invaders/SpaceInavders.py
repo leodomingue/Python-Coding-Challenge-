@@ -20,6 +20,13 @@ class Game:
     def __init__(self, app):
         self.app = app
         
+        #HEALTH AND SCORE
+        self.health_player = 5
+        self.live_surf = pygame.image.load("Space Invaders/assets/player.png").convert_alpha()
+        self.font = pygame.font.Font("Space Invaders/assets/space_invaders.ttf", 30)
+        
+        self.score = 0
+        
         #PLayer setup
         player_sprite = Player((WIDTH/2,HEIGHT), WIDTH, HEIGHT)
         self.player = pygame.sprite.GroupSingle(player_sprite)
@@ -41,6 +48,15 @@ class Game:
         #Alien Extra
         self.extra = pygame.sprite.GroupSingle()
         self.extra_spawn_time = random.randint(400, 800)
+        
+    def display_lives(self):
+        lives_text = str(self.health_player)
+        text = self.font.render(lives_text, False, "white")
+        text_rect = text.get_rect(center=(WIDTH - self.live_surf.get_size()[0]-20, 20))
+        app.screen.blit(text, text_rect)
+        
+        app.screen.blit(self.live_surf, (WIDTH - self.live_surf.get_size()[0],0))
+        app.screen.blit
         
     def extra_alien_time(self):
         self.extra_spawn_time -= 1
@@ -125,7 +141,7 @@ class Game:
                 #Player Collsion
                 if pygame.sprite.spritecollide(shoot, self.player, False):
                     shoot.kill()
-                    print("a")
+                    self.health_player -= 1
                     
         #Alien-player 
         if self.aliens:
@@ -156,6 +172,7 @@ class Game:
         self.extra.draw(app.screen)
         
         self.collision_check()
+        self.display_lives()
 
 class App:
     def __init__(self):
