@@ -27,6 +27,7 @@ class Game:
         
         self.score = 0
         
+        
         #PLayer setup
         player_sprite = Player((WIDTH/2,HEIGHT), WIDTH, HEIGHT)
         self.player = pygame.sprite.GroupSingle(player_sprite)
@@ -49,10 +50,22 @@ class Game:
         self.extra = pygame.sprite.GroupSingle()
         self.extra_spawn_time = random.randint(400, 800)
         
+        #Music and sound
+        self.music = pygame.mixer.Sound("Space Invaders/assets/music.mp3")
+        self.music.set_volume(0.2)
+        self.music.play(loops = -1)
+        
+        
+    def display_score(self):
+        score_text = "Puntuacion: "+str(self.score)
+        text = self.font.render(score_text, False, "White")
+        text_rect = text.get_rect(topleft=(0,0))
+        app.screen.blit(text, text_rect)
+        
     def display_lives(self):
-        lives_text = str(self.health_player)
+        lives_text = "vidas: " + str(self.health_player)
         text = self.font.render(lives_text, False, "white")
-        text_rect = text.get_rect(center=(WIDTH - self.live_surf.get_size()[0]-20, 20))
+        text_rect = text.get_rect(topright=(WIDTH - self.live_surf.get_size()[0]-20, 0))
         app.screen.blit(text, text_rect)
         
         app.screen.blit(self.live_surf, (WIDTH - self.live_surf.get_size()[0],0))
@@ -124,12 +137,17 @@ class Game:
                     shoot.kill()
                     
                 #Alien Collision
-                if pygame.sprite.spritecollide(shoot, self.aliens, True):
+                alien_hit = pygame.sprite.spritecollide(shoot, self.aliens, True)
+                if alien_hit:
+                    for alien in alien_hit:
+                        self.score += alien.value
                     shoot.kill()
+
                     
                 #Extra Collsion
                 if pygame.sprite.spritecollide(shoot, self.extra, True):
                     shoot.kill()
+                    self.score += 1000
                     
         #Alien shoot
         if self.alien_shoots:
@@ -173,6 +191,7 @@ class Game:
         
         self.collision_check()
         self.display_lives()
+        self.display_score()
 
 class App:
     def __init__(self):

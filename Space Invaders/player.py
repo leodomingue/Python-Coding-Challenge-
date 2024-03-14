@@ -17,6 +17,9 @@ class Player(pygame.sprite.Sprite):
         self.width = WIDTH
         self.height = HEIGHT
         
+        self.sound = pygame.mixer.Sound("Space Invaders/assets/laser_sound.mp3")
+        self.sound.set_volume(0.01)
+        
     def get_input(self):
         keys = pygame.key.get_pressed()
         
@@ -27,6 +30,7 @@ class Player(pygame.sprite.Sprite):
             
         if keys[pygame.K_SPACE] and self.ready is True:
             self.shoot()
+            self.sound.play()
             self.ready = False
             self.shoot_time = pygame.time.get_ticks()
             
