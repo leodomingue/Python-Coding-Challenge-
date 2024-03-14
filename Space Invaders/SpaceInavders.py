@@ -2,7 +2,7 @@ import pygame
 import random
 from player import Player
 import obstacle
-from alien import Alien
+from alien import Alien, Extra
 from bullet import Bullet
 
 #VARIABLE
@@ -38,6 +38,15 @@ class Game:
         self.alien_direction = 1
         self.alien_shoots = pygame.sprite.Group()
         
+        #Alien Extra
+        self.extra = pygame.sprite.GroupSingle()
+        self.extra_spawn_time = random.randint(400, 800)
+        
+    def extra_alien_time(self):
+        self.extra_spawn_time -= 1
+        if self.extra_spawn_time <= 0:
+            self.extra.add(Extra(random.choice(["right","left"]), WIDTH))
+            self.extra_spawn_time = random.randint(400, 800)
         
     def alien_postion_checker(self):
         all_aliens = self.aliens.sprites()
@@ -95,14 +104,17 @@ class Game:
         self.player.update()
         self.aliens.update(self.alien_direction)
         self.alien_postion_checker()
+        self.extra_alien_time()
         
         self.alien_shoots.update()
+        self.extra.update()
         
         self.player.sprite.shoots.draw(app.screen)
         self.player.draw(app.screen)
         self.block.draw(app.screen)
         self.aliens.draw(app.screen)
         self.alien_shoots.draw(app.screen)
+        self.extra.draw(app.screen)
         
 
 class App:
