@@ -52,7 +52,7 @@ class Game:
         
         #Music and sound
         self.music = pygame.mixer.Sound("Space Invaders/assets/music.mp3")
-        self.music.set_volume(0.2)
+        self.music.set_volume(0.1)
         self.music.play(loops = -1)
         
         
