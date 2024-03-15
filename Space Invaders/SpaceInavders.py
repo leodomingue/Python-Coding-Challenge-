@@ -42,7 +42,7 @@ class Game:
         
         #Alien Setup
         self.aliens = pygame.sprite.Group()
-        self.alien_setup(rows=6, cols=8)
+        self.alien_setup(rows=1, cols=1)
         self.alien_direction = 1
         self.alien_shoots = pygame.sprite.Group()
         
@@ -54,6 +54,8 @@ class Game:
         self.music = pygame.mixer.Sound("Space Invaders/assets/music.mp3")
         self.music.set_volume(0.1)
         self.music.play(loops = -1)
+        
+        self.speed = 1
         
         
     def display_score(self):
@@ -81,10 +83,10 @@ class Game:
         all_aliens = self.aliens.sprites()
         for alien in all_aliens:
             if alien.rect.right >= WIDTH:
-                self.alien_direction =  -1
+                self.alien_direction = -self.speed
                 self.alien_move_down(2)
             elif alien.rect.left <= 0:
-                self.alien_direction =  1
+                self.alien_direction =  self.speed
                 self.alien_move_down(2)
                 
     def alien_move_down(self, distance):
@@ -171,6 +173,54 @@ class Game:
                     exit()
                     
             
+    def win_screen(self):
+        if not self.aliens.sprites():
+            self.app.screen.fill("BLACK")
+            self.aliens.empty()
+            self.alien_shoots.empty()
+            self.extra.empty()
+            self.block.empty()
+            
+            pause = True
+            while pause:
+                #Text
+                
+                win_text = "Has ganado"
+                text = self.font.render(win_text, False, "White")
+                text_rect = text.get_rect(center = (WIDTH/2, HEIGHT/2))
+                app.screen.blit(text, text_rect)
+                
+                next_level_text = "Pulsa J para ir al siguiente nivel"
+                next_text = self.font.render(next_level_text, False, "White")
+                next_level__rect = next_text.get_rect(center = (WIDTH/2, HEIGHT/2 + 50))
+                app.screen.blit(next_text, next_level__rect)
+                
+                
+                #Variables
+                self.player.draw(app.screen)
+                self.display_lives()
+                self.display_score()
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+                
+                
+                #Options
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_j]:
+                    #New Setup
+                    self.aliens = pygame.sprite.Group()
+                    self.alien_setup(rows=8, cols=8)
+                    self.alien_direction = 2
+                    self.alien_shoots = pygame.sprite.Group()
+                    self.alien_postion_checker()
+                    self.speed = self.speed + 1
+                    self.create_multiple_obstacle(WIDTH/20, 650, *self.obstacle_x_positions)
+                    
+                    pause = False
+                pygame.display.update()
         
     
     def run_game(self):
@@ -192,6 +242,9 @@ class Game:
         self.collision_check()
         self.display_lives()
         self.display_score()
+        
+        if not self.aliens:
+            self.win_screen()
 
 class App:
     def __init__(self):

@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
         
         self.ready = True
         self.shoot_time = 0
-        self.shoot_cc = 1000
+        self.shoot_cc = 600
 
         self.shoots = pygame.sprite.Group()
         
