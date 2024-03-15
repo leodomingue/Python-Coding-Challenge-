@@ -190,6 +190,10 @@ class Game:
                 if pygame.sprite.spritecollide(alien, self.player, False):
                     self.lose_screen()
                     
+                if alien.rect.y >= HEIGHT:
+                    self.lose_screen()
+                    
+                    
             
     def win_screen(self):
         if not self.aliens.sprites():
@@ -352,7 +356,9 @@ class App:
         
         
     def run(self):
+        pause = True
         while True:
+            keys = pygame.key.get_pressed()
             self.clock.tick(FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -361,10 +367,24 @@ class App:
                 if event.type == self.ALIENS_SHOOT_EVENT:
                     self.game.alien_shoot()
                     
+            font = pygame.font.Font("Space Invaders/assets/space_invaders.ttf", 30)
+            initial_text = "Presiona J para jugar"
+            text = font.render(initial_text, False, "White")
+            initial_text_rect = text.get_rect(center = (WIDTH/2, HEIGHT/2))
+            app.screen.blit(text, initial_text_rect)
             
-                    
-            self.screen.fill(BLACK)
-            self.game.run_game()
+            
+            font_2 = pygame.font.Font("Space Invaders/assets/space_invaders.ttf", 60)
+            title_text = "SPACE INVADERS"
+            T_text = font_2.render(title_text, False, "GREEN")
+            initial_text_rect = T_text.get_rect(center = (WIDTH/2, 100))
+            app.screen.blit(T_text, initial_text_rect)
+            
+            if keys[pygame.K_j]:
+                pause = False
+            if pause is False:
+                self.screen.fill(BLACK)
+                self.game.run_game()
                 
             pygame.display.update()
             
