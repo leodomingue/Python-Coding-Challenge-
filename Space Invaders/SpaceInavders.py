@@ -21,7 +21,7 @@ class Game:
         self.app = app
         
         #HEALTH AND SCORE
-        self.health_player = 5
+        self.health_player = 3
         self.live_surf = pygame.image.load("Space Invaders/assets/player.png").convert_alpha()
         self.font = pygame.font.Font("Space Invaders/assets/space_invaders.ttf", 30)
         
@@ -42,7 +42,9 @@ class Game:
         
         #Alien Setup
         self.aliens = pygame.sprite.Group()
-        self.alien_setup(rows=8, cols=8)
+        self.rows = 4
+        self.columns = 4
+        self.alien_setup(rows=self.rows, cols=self.columns)
         self.alien_direction = 1
         self.alien_shoots = pygame.sprite.Group()
         
@@ -57,6 +59,21 @@ class Game:
         
         self.speed = 1
         
+        self.level = 0
+        
+        #Background
+        self.planet_1 = pygame.image.load("Space Invaders/assets/Planets/earth.png").convert_alpha()
+        self.planet_2 = pygame.image.load("Space Invaders/assets/Planets/mars.png").convert_alpha()
+        self.planet_3 = pygame.image.load("Space Invaders/assets/Planets/planet.png").convert_alpha()
+        self.planet_4 = pygame.image.load("Space Invaders/assets/Planets/purple planet.png").convert_alpha()
+        
+        self.planet = self.planet_1
+        
+    def display_planet(self, planet):
+        image_rect = planet.get_rect()
+        x =(WIDTH - image_rect.width)//2
+        y =(HEIGHT - image_rect.height)//2
+        app.screen.blit(planet, (x, y))
         
     def display_score(self):
         score_text = "Puntuacion: "+str(self.score)
@@ -117,18 +134,19 @@ class Game:
                 self.aliens.add(alien_sprite)
         
         
-    def create_obstacle(self, x_start, y_start, offset_x):
+    def create_obstacle(self, color, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
             for col_index, col in enumerate(row):
                 if col == "x":
                     x = x_start + col_index * self.block_size + offset_x
                     y = y_start + row_index * self.block_size
-                    block = obstacle.Block(self.block_size, (240, 79, 80), x, y)
+                    block = obstacle.Block(self.block_size, color, x, y)
                     self.block.add(block)
                     
     def create_multiple_obstacle(self, x_start, y_start, *offset):
+        color = random.choice(["red", "orange", "yellow", "green", "blue", "purple", "pink", "white", "gray", "cyan", "magenta", "lime", "teal", "olive", "navy", "maroon", "aquamarine", "coral"])
         for offset_x in offset:
-            self.create_obstacle(x_start, y_start, offset_x)
+            self.create_obstacle(color, x_start, y_start, offset_x)
             
     def collision_check(self):
         #Player shoots
@@ -150,6 +168,7 @@ class Game:
                 if pygame.sprite.spritecollide(shoot, self.extra, True):
                     shoot.kill()
                     self.score += 1000
+                    self.health_player += 1
                     
         #Alien shoot
         if self.alien_shoots:
@@ -184,7 +203,7 @@ class Game:
             while pause:
                 #Text
                 
-                win_text = "Has ganado"
+                win_text = f"Has ganado el nivel {self.level}"
                 text = self.font.render(win_text, False, "White")
                 text_rect = text.get_rect(center = (WIDTH/2, HEIGHT/2))
                 app.screen.blit(text, text_rect)
@@ -211,11 +230,24 @@ class Game:
                 if keys[pygame.K_j]:
                     #New Setup
                     self.aliens = pygame.sprite.Group()
-                    self.alien_setup(rows=8, cols=8)
+                    self.level += 1
+                    
+                    if self.level % 2 == 1:
+                        self.rows += 1
+                        self.columns += 1
+                    else:
+                        self.speed = self.speed + 1
+                        
+                    if self.level >= 8:
+                        self.planet = self.planet_4
+                    elif self.level >= 6:
+                        self.planet = self.planet_3
+                    elif self.level >= 3:
+                        self.planet = self.planet_2
+                    self.alien_setup(rows=self.rows, cols=self.columns)
                     self.alien_direction = 2
                     self.alien_shoots = pygame.sprite.Group()
                     self.alien_postion_checker()
-                    self.speed = self.speed + 1
                     self.create_multiple_obstacle(WIDTH/20, 650, *self.obstacle_x_positions)
                     
                     pause = False
@@ -223,6 +255,7 @@ class Game:
                 
     def lose_screen(self):
         self.app.screen.fill("BLACK")
+        self.display_planet(self.planet)
         self.aliens.empty()
         self.alien_shoots.empty()
         self.extra.empty()
@@ -259,14 +292,20 @@ class Game:
             if keys[pygame.K_j]:
                     #New Setup
                 self.aliens = pygame.sprite.Group()
-                self.alien_setup(rows=8, cols=8)
+                self.columns = 4
+                self.rows =4
+                self.alien_setup(rows=self.rows, cols=self.columns)
                 self.alien_direction = 1
                 self.alien_shoots = pygame.sprite.Group()
                 self.alien_postion_checker()
-                self.speed = self.speed + 1
+                self.speed = 1
                 self.create_multiple_obstacle(WIDTH/20, 650, *self.obstacle_x_positions)
                 self.score = 0
-                self.health_player = 5
+                self.health_player = 3
+                self.level = 0
+                
+                self.planet = self.planet_1
+                self.display_planet(self.planet)
                     
                     
                 pause = False
@@ -275,6 +314,7 @@ class Game:
         
     
     def run_game(self):
+        self.display_planet(self.planet)
         self.player.update()
         self.aliens.update(self.alien_direction)
         self.alien_postion_checker()
