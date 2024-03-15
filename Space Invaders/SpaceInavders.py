@@ -42,7 +42,7 @@ class Game:
         
         #Alien Setup
         self.aliens = pygame.sprite.Group()
-        self.alien_setup(rows=1, cols=1)
+        self.alien_setup(rows=8, cols=8)
         self.alien_direction = 1
         self.alien_shoots = pygame.sprite.Group()
         
@@ -169,8 +169,7 @@ class Game:
                 pygame.sprite.spritecollide(alien, self.block, True)
                 
                 if pygame.sprite.spritecollide(alien, self.player, False):
-                    pygame.quit()
-                    exit()
+                    self.lose_screen()
                     
             
     def win_screen(self):
@@ -221,6 +220,58 @@ class Game:
                     
                     pause = False
                 pygame.display.update()
+                
+    def lose_screen(self):
+        self.app.screen.fill("BLACK")
+        self.aliens.empty()
+        self.alien_shoots.empty()
+        self.extra.empty()
+        self.block.empty()
+            
+        pause = True
+        while pause:
+                #Text
+                
+            win_text = "Has perdido"
+            text = self.font.render(win_text, False, "White")
+            text_rect = text.get_rect(center = (WIDTH/2, HEIGHT/2))
+            app.screen.blit(text, text_rect)
+                
+            next_level_text = "Pulsa J para reinicar"
+            next_text = self.font.render(next_level_text, False, "White")
+            next_level__rect = next_text.get_rect(center = (WIDTH/2, HEIGHT/2 + 50))
+            app.screen.blit(next_text, next_level__rect)
+                
+                
+            #Variables
+            self.player.draw(app.screen)
+            self.display_lives()
+            self.display_score()
+                
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                
+                
+                #Options
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_j]:
+                    #New Setup
+                self.aliens = pygame.sprite.Group()
+                self.alien_setup(rows=8, cols=8)
+                self.alien_direction = 1
+                self.alien_shoots = pygame.sprite.Group()
+                self.alien_postion_checker()
+                self.speed = self.speed + 1
+                self.create_multiple_obstacle(WIDTH/20, 650, *self.obstacle_x_positions)
+                self.score = 0
+                self.health_player = 5
+                    
+                    
+                pause = False
+            pygame.display.update()
+        
         
     
     def run_game(self):
@@ -245,6 +296,9 @@ class Game:
         
         if not self.aliens:
             self.win_screen()
+            
+        if self.health_player == -1:
+            self.lose_screen()
 
 class App:
     def __init__(self):
