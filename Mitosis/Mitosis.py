@@ -1,5 +1,6 @@
 import pygame
 import random
+from cell import Cell
 
 #Variables
 FPS = 60
@@ -18,6 +19,15 @@ class Animation:
         self.app = app
         self.background = self.recreate_backgroud()
         
+        #Cell setup
+        self.cells = pygame.sprite.Group()
+        self.initial_cell_count = 5
+        self.cell_setup(self.initial_cell_count)
+        
+        
+        
+        
+        
     # Generate a random color within the specified range
     def random_color(self, color_range):
         return (random.randint(color_range[0], color_range[1]))
@@ -32,10 +42,19 @@ class Animation:
                 pygame.draw.rect(background, color, (x, y, 5, 5))
         return background
                 
+    def cell_setup(self, cell_count):
+        for i in range(cell_count):
+            form = random.choice(("circle", "ellipse"))
+            x = random.randint(100, 700)
+            y = random.randint(100, 700)
+            cell_sprite = Cell(self.background, form, x, y)
+            self.cells.add(cell_sprite)
     
     # Run Animation
     def run_animation(self):
+        self.cells.update(1)
         self.app.screen.blit(self.background, (0, 0))
+        self.cells.draw(self.app.screen)
 
 
 #Class to Initialize app
@@ -57,7 +76,6 @@ class App:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                    
                     
             self.screen.fill("BLACK")
             self.animation.run_animation()
