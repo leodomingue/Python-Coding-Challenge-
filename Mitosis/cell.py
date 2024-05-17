@@ -17,7 +17,7 @@ class Cell(pygame.sprite.Sprite):
         self.color = (255, 0, 0)
         
         #Give radius if self form is circle or a and b if is ellipse
-        self.size = [random.randint(15,25) if self.form == "circle" else (random.randint(15,20),random.randint(15,20))]
+        self.size = [random.randint(15,25) if self.form == "circle" else random.randint(15,30),random.randint(15,30)]
         
         self.image = self.create_form(form)
         self.rect = self.image.get_rect(topleft = (x, y))
@@ -44,7 +44,7 @@ class Cell(pygame.sprite.Sprite):
             cell_surface = pygame.Surface((surface_WIDTH, surface_WIDTH), pygame.SRCALPHA)
         
 
-            pygame.gfxdraw.filled_circle(cell_surface, surface_WIDTH//2, surface_WIDTH//2, self.size[0] + 8, (107,69,20,255)) #28
+            pygame.gfxdraw.filled_circle(cell_surface, surface_WIDTH//2, surface_WIDTH//2, self.size[0] + 8, (107,69,20,255))
             pygame.gfxdraw.filled_circle(cell_surface, surface_WIDTH//2, surface_WIDTH//2, self.size[0] + 7, (229,190,117,255))
             pygame.gfxdraw.filled_circle(cell_surface, surface_WIDTH//2, surface_WIDTH//2, self.size[0] + 5, (255,224,153,255))
             pygame.gfxdraw.filled_circle(cell_surface, surface_WIDTH//2, surface_WIDTH//2, self.size[0] + 3, (139,102,35,255))
@@ -60,16 +60,21 @@ class Cell(pygame.sprite.Sprite):
             
             
         elif form == "ellipse": 
-            pygame.gfxdraw.filled_ellipse(cell_surface, 30, 30, 29, 19, (107,69,20,255))
-            pygame.gfxdraw.filled_ellipse(cell_surface, 30, 30, 27, 17, (229,190,117,255))
-            pygame.gfxdraw.filled_ellipse(cell_surface, 30, 30, 25, 15, (255,224,153,255))
-            pygame.gfxdraw.filled_ellipse(cell_surface, 30, 30, 23, 13, (139,102,35,255))
-            pygame.gfxdraw.filled_ellipse(cell_surface, 30, 30, 20, 10, (240,190,122,255))
+            surface_WIDTH = self.size[0] *2 +16
+            surface_HEIGHT = self.size[1] *2 + 16
+            cell_surface = pygame.Surface((surface_WIDTH, surface_HEIGHT), pygame.SRCALPHA)
+            
+            
+            pygame.gfxdraw.filled_ellipse(cell_surface, surface_WIDTH//2, surface_HEIGHT//2, self.size[0]+6, self.size[1]+6, (107,69,20,255))
+            pygame.gfxdraw.filled_ellipse(cell_surface, surface_WIDTH//2, surface_HEIGHT//2, self.size[0]+4, self.size[1]+4, (229,190,117,255))
+            pygame.gfxdraw.filled_ellipse(cell_surface, surface_WIDTH//2, surface_HEIGHT//2, self.size[0]+3, self.size[1]+3, (255,224,153,255))
+            pygame.gfxdraw.filled_ellipse(cell_surface, surface_WIDTH//2, surface_HEIGHT//2, self.size[0]+2, self.size[1]+2, (139,102,35,255))
+            pygame.gfxdraw.filled_ellipse(cell_surface, surface_WIDTH//2, surface_HEIGHT//2, self.size[0], self.size[1], (240,190,122,255))
             
             #Create random pixels
-            num_points = 300  
+            num_points = self.size[0] * self.size[1]
             for i in range(num_points):
-                point = self.random_point_in_ellipse(20, 10, (30, 30)) 
+                point = self.random_point_in_ellipse(self.size[0], self.size[1], (surface_WIDTH//2, surface_HEIGHT//2)) 
                 
                 cell_surface.set_at(point, random.choice(COLORS))  
             

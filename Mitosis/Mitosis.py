@@ -44,9 +44,9 @@ class Animation:
                 
     def cell_setup(self, cell_count):
         for i in range(cell_count):
-            form = random.choice(("circle", "circle"))
-            x = random.randint(100, 700)
-            y = random.randint(100, 700)
+            form = random.choice(("circle", "ellipse"))
+            x = random.randint(50, 750)
+            y = random.randint(50, 750)
             cell_sprite = Cell(self.background, form, x, y)
             self.cells.add(cell_sprite)
     
