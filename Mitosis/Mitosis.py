@@ -21,7 +21,7 @@ class Animation:
         
         #Cell setup
         self.cells = pygame.sprite.Group()
-        self.initial_cell_count = 5
+        self.initial_cell_count = 20
         self.cell_setup(self.initial_cell_count)
         
         
@@ -44,7 +44,7 @@ class Animation:
                 
     def cell_setup(self, cell_count):
         for i in range(cell_count):
-            form = random.choice(("circle", "ellipse"))
+            form = random.choice(("circle", "circle"))
             x = random.randint(100, 700)
             y = random.randint(100, 700)
             cell_sprite = Cell(self.background, form, x, y)
