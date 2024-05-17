@@ -1,0 +1,14 @@
+The program's idea is to recreate cells in Pygame that can simulate mitosis.
+
+1) Recreate background:
+Firstly, I need to capture images under a microscope and observe the pixel distribution to recreate an appropriate background.
+
+2)Recreate Cells:
+I need to observe cells to understand the pixel distribution and composition in order to recreate the cell accurately.
+
+3) Cells Movement
+I must implement random movement that appears natural and not erratic.
+
+4) mitosis
+There should be a touch function that allows touching a cell to trigger division into two parts, with the tangent vector (the velocity vector) doubling its speed. 
+This action will result in one part of the cell moving in the same direction as before while the other moves in the opposite direction.
